@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Progetto CAS {% endblock %}
+
+{% block content%}
+
+{% csrf_token %}
+<H1>NoiSense</H1>
+
+<div id="link_previsioni"><a href="./previsioni.html">Forecasts</a></div>
+
+<div id="radiochoice">
+    <div class="radiomap">
+        <input type="radio" id="positions" name="rc" value="Positions" checked="true">
+        <label for="positions"> Positions</label>
+    </div>
+
+    <div class="radiomap">
+        <input type="radio" id="kmeans" name="rc" value="KMeans" >
+        <label for="kmeans"> K-Means</label>
+    </div>
+
+    <div class="radiomap">
+      <input type="radio" id="clustering" name="rc" value="Clustering" >
+      <label for="clustering"> Clustering</label>
+    </div>
+
+    <div class="radiomap">
+        <input type="radio" id="heatmap" name="rc" value="Heatmap">
+        <label for="heatmap"> Heatmap</label> 
+    </div>
+</div>
+
+<div id="checkbox_choice">
+  <div class="checkbox_algo">
+    <input type="checkbox" id="gpsp" name="gpsp" value="GPS Perturbation" checked="true" onclick="setGPSPpos()">
+    <label for="gpsp"> GPS Perturbation</label>
+    <span id="gpsp_square" class="algo_color"></span>
+  </div>
+
+  <div class="checkbox_algo">
+    <input type="checkbox" id="dummy" name="dummy" value="Dummy Updates" checked="true" onclick="setDummypos()">
+    <label for="dummy"> Dummy Updates </label>
+    <span id="dummy_square" class="algo_color"></span>
+  </div>
+
+  <div class="checkbox_algo">
+    <input type="checkbox" id="noprivacy" name="noprivacy" value="No Privacy" checked="true" onclick="setNoPripos()">
+    <label for="noprivacy"> No Privacy</label>
+    <span id="nop_square" class="algo_color"></span>
+  </div>
+  <br>
+</div>
+
+
+<form id="kmeansform">
+  <div class="form-group">
+    <label for="distance" class="col-form-label">Cluster distance</label>
+    <input id="distance" class="form-control-range" type="range" min="0" max="200" step="1" value="40"/>
+    <small class="form-text text-muted">
+      The distance within which features will be clustered together.
+    </small>
+  </div>
+  <div class="form-group">
+    <label for="min-distance" class="col-form-label">Minimum distance</label>
+    <input id="min-distance" class="form-control-range" type="range" min="0" max="200" step="1" value="20"/>
+    <small class="form-text text-muted">
+      The minimum distance between clusters. Can't be larger than the configured distance.
+    </small>
+  </div>
+</form>
+
+<div id="kmeans_clustering" class="form-group">
+  <label for="distance" class="col-form-label">N Clusters =&nbsp;</label><span id="n_clusters_val"></span>
+  <input id="n-clusters" class="form-control-range" type="range" min="1" max="10" step="1" value="5"/>
+  <small class="form-text text-muted">
+    The number of the clusters
+  </small><br>
+</div>
+
+<div id="popup" class="ol-popup">
+  <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+  <div id="popup-content"></div>
+</div>
+
+
+<script>
+
+  var json_pos_gpsp = []
+  var rumori_gpsp = []
+  var timestamp_gpsp = []
+
+  var json_pos_dummy = []
+  var rumori_dummy = []
+  var timestamp_dummy = []
+
+  var json_pos_noprivacy = []
+  var rumori_noprivacy = []
+  var timestamp_noprivacy = []
+
+  {% for el in rilevazioni_gpsp %}
+
+  var pos = '{{ el.0 }}'.replace(/\&quot;/g,'"')
+  var pos = pos.replace("\\","")
+  var rumore = '{{ el.1 }}'
+  var ts = '{{ el.2 }}'
+
+  json_pos_gpsp.push(pos)
+  rumori_gpsp.push(rumore)
+  timestamp_gpsp.push(ts) 
+
+  {% endfor %}
+
+  {% for el in rilevazioni_dummy %}
+
+  var pos = '{{ el.0 }}'.replace(/\&quot;/g,'"')
+  var pos = pos.replace("\\","")
+  var rumore = '{{ el.1 }}'
+  var ts = '{{ el.2 }}'
+  
+  json_pos_dummy.push(pos)
+  rumori_dummy.push(rumore)
+  timestamp_dummy.push(ts) 
+
+  {% endfor %}
+
+  {% for el in rilevazioni_noprivacy %}
+
+  var pos = '{{ el.0 }}'.replace(/\&quot;/g,'"')
+  var pos = pos.replace("\\","")
+  var rumore = '{{ el.1 }}'
+  var ts = '{{ el.2 }}'
+  
+  json_pos_noprivacy.push(pos)
+  rumori_noprivacy.push(rumore)
+  timestamp_noprivacy.push(ts) 
+
+  {% endfor %}
+
+</script>
+
+<script src="{% static 'homepage/js/index.js' %}" type="text/javascript"></script>
+
+{% endblock %}

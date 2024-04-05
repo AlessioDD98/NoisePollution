@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Previsioni CAS {% endblock %}
+
+{% block content%}
+
+<h1>Forecasts</h1>
+
+{% csrf_token %}
+
+<div id="coor_to_predict">
+    <input type="text" id="lat_pred" name="lat_pred" placeholder="Lat to Predict"/>
+    <input type="text" id="long_pred" name="long_pred" placeholder="Long to Predict"/>
+    <input type="button" id="predict" name="predict" value="Predict"/>
+    <span id="rm_predicted"></span>
+</div><br>
+
+<div id="popup" class="ol-popup">
+    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+    <div id="popup-content"></div>
+</div>
+
+<div id="map" class="map"></div>
+
+<script>
+
+    var longs = []
+    var lats = []
+    var rms = []
+
+{% for el in rilevazioni %}
+    var long = '{{ el.0 }}'
+    var lat = '{{ el.1 }}'
+    var rm = '{{ el.2 }}'
+    //console.log(pos + rumore + ts)
+
+    longs.push(long)
+    lats.push(lat)
+    rms.push(rm) 
+
+{% endfor %}
+
+</script>
+
+<script src="{% static 'homepage/js/previsioni.js' %}" type="text/javascript"></script>
+
+
+{% endblock %}
